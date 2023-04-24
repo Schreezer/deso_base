@@ -194,7 +194,7 @@ export const Home = () => {
           deso-protocol
         </a>
       </p> */}
-      <h1>this is home</h1>
+      <h1>Welcome to D Quester Version: 0.01</h1>
       {/* <p> {allWaves} </p> */}
       <DisplayWaves value= {allWaves} />
       {/* <button onClick={null}>Click me</button> */}
