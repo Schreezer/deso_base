@@ -115,7 +115,7 @@ export const Nav = () => {
                 <a href= {'/sign-and-submit-tx'}>Ask a Question</a>
               </li>
               <li>
-                <a href={`/switch-account`}>Switch Accounts</a>
+                {/* <a href={`/switch-account`}>Switch Accounts</a> */}
               </li>
 
             </ul>
