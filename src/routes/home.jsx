@@ -1,76 +1,184 @@
 import abi from "..//poo.json";
+import "./DisplayWaves.css";
 import { ethers } from "ethers";
 import React, { useEffect, useState } from "react";
+import MyContext from '..//components/MyContext.js';
+import { getDatabase, ref, onValue, push, update, child} from "firebase/database";
+// import { firebase } from '@react-native-firebase/database';
 const getEthereumObject = () => window.ethereum;
 
+
+
 export const Home = () => {
+  const[keyy, setKeyy] = useState(0);
   const [currentAccount, setCurrentAccount] = useState("");
-  const contractAddress = "0xc2d8Ae1EF720FCeFa0368253548c4Fc7f06094d4";
+
+  // const { currentAccount } = useContext(MyContext);
+  const contractAddress = "0x15796323a77408BBAD4C05535Bf7fFb10E8Bb6AB";
   const contractABI = abi.abi;
   const [allWaves, setAllWaves] = useState([]);
-  const getAllQuestions = async () => {
-    try {
-      const { ethereum } = window;
-      if (ethereum) {
-        const provider = new ethers.providers.Web3Provider(ethereum);
-        const signer = provider.getSigner();
-        const wavePortalContract = new ethers.Contract(contractAddress, contractABI, signer);
-        const questions = await wavePortalContract.getAllCards();
-        let wavesCleaned = [];
-        questions.forEach(wave => {
-          wavesCleaned.push({
-            Questioner: wave.querrier,
-            timestamp: new Date(wave.timestamp * 1000),
-            Question: wave.question,
-            Bounty: wave.bounty
-          });
-        });
-        wavesCleaned.reverse();
-        setAllWaves(wavesCleaned);
-      } else {
-        console.log("Ethereum object doesn't exist!")
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  }
-  const connectWallet = async () => {
-    try {
-      const ethereum = getEthereumObject();
-      if (!ethereum) {
-        alert("Get MetaMask!");
-        return;
-      }
 
-      const accounts = await ethereum.request({
-        method: "eth_requestAccounts",
-      });
+  // const connectWallet = async () => {
+  //   try {
+  //     const ethereum = getEthereumObject();
+  //     if (!ethereum) {
+  //       alert("Get MetaMask!");
+  //       return;
+  //     }
 
-      console.log("Connected", accounts[0]);
-      setCurrentAccount(accounts[0]);
-    } catch (error) {
-      console.error(error);
-    }
+  //     const accounts = await ethereum.request({
+  //       method: "eth_requestAccounts",
+  //     });
+
+  //     console.log("Connected", accounts[0]);
+  //     setCurrentAccount(accounts[0]);
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
   
 
-  };
+  // };
+  
+  useEffect(() => {
+    const getAllQuestions = async () => {
+      try {
+        const { ethereum } = window;
+        if (ethereum) {
+          const provider = new ethers.providers.Web3Provider(ethereum);
+          const signer = provider.getSigner();
+          const wavePortalContract = new ethers.Contract(contractAddress, contractABI, signer);
+          const questions = await wavePortalContract.getAllCards();
+          // await questions.wait();
+          console.log("Retrieved all questions...", questions);
+          let wavesCleaned = [];
+          questions.forEach(wave => {
+            wavesCleaned.push({
+              Questioner: wave.querrier,
+              timestamp: new Date(wave.timestamp * 1000),
+              // timestamp: wave.timestamp,
+              Question: wave.question,
+              Bounty: wave.bounty,
+            });
+          });
+          wavesCleaned.reverse();
+          // setAllWaves(wavesCleaned);
+        } else {
+          console.log("Ethereum object doesn't exist!")
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    
+    
+    // Your function goes here
+    getAllQuestions();
+    console.log('The component has been mounted');
 
-  function Display_waves(props){
-    return(
-      props.value.map((wave, index) => {
+
+    // now using the google firebase
+    const cal = async()=>{
+      const db = getDatabase();
+      // console.log(db);
+      const starCountRef = ref(db, "/posts/");
+      onValue(starCountRef, (snapshot) => {
+        const data = snapshot.val();
+        // console.log(data);
+        let questionsCleaned = [];
+        for (const key in data) {
+            // do something with the object that matches the key
+            const value = data[key];
+            questionsCleaned.push({
+              Qid: key,
+              Questioner: value["questioner"],
+              // timestamp: value["uid"],
+              // timestamp: wave.timestamp,
+              Question: value["Question"],
+              Bounty: value["Bounty"],
+            });
+            questionsCleaned.reverse();
+            setAllWaves(questionsCleaned);
+          
+        }
+        // updateStarCount(postElement, data);
+      });
+    }
+    cal();
+    console.log('The component has been mounted');
+
+  }, []);
+
+  
+
+  // function Display_waves(props){
+
+  //   return(
+  //     props.value.map((wave, index) => {
       
-          return (
-            <div key={index} style={{ backgroundColor: "OldLace", marginTop: "16px", padding: "8px" }}>
+  //         return (
+  //           <div key={index} style={{ backgroundColor: "OldLace", marginTop: "16px", padding: "8px" }}>
            
-              <div>Address: {wave.address}</div>
-              <div>Time: {wave.timestamp.toString()}</div>
-              <div>Message: {wave.message}</div>
-            </div>)
+  //             <div>Address: {wave.Questioner}</div>
+  //             <div>Time: {wave.timestamp.toString()}</div>
+  //             <div>Message: {wave.Question}</div>
+  //             <div>Bounty: {wave.Bounty.toString()}</div>
+  //             <input type="text" placeholder="Answer" />
+  //             <button>Answer</button>
+  //           </div>)
            
         
     
-      })
-    ) }
+  //     })
+  //   ) }
+
+  function DisplayWaves(props) {
+    const[answer,setAnswer]=useState("");
+    function handleChangeA(e) {
+      setAnswer(e.target.value);
+    }
+    function Answer(qid){
+      console.log(answer);
+      console.log(qid);
+      const db = getDatabase();
+      console.log(currentAccount);
+      const _Answer = {
+        Answer: answer,
+        Answerer: currentAccount,
+        Qid: qid,
+      };
+      const newPostKey = push(child(ref(db), 'posts')).key;
+      const updates = {};
+      updates['/posts/' + qid + "/" + newPostKey] = _Answer;
+      updates['/user-posts/' + currentAccount + '/' + newPostKey] = _Answer;
+      
+      return update(ref(db), updates);
+    
+      
+
+    }
+    return (
+      <div className="waves-container">
+        {console.log(props.value)}
+        {props.value.map((wave, index) => (
+          <div key={index} className="wave-card">
+            <div> {console.log("Helled up")} </div>
+            <div> {console.log(wave)} </div>
+            <div className="bounty"> Bounty: {wave.Bounty}</div>
+            <div className="questioner">Questioner: {wave.Questioner}</div>
+            <div className="question">{wave.Question}</div>
+            
+            <div className="answer-container">
+              <input type="text" placeholder="Answer" className="answer-input" onChange={handleChangeA}/>
+             
+              <button className="answer-button" onClick={() => Answer(wave.Qid)}>Answer</button>
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  }
+  
+  
 
   return (
     <>
@@ -86,7 +194,10 @@ export const Home = () => {
           deso-protocol
         </a>
       </p> */}
-      <Display_waves value= {allWaves} />
+      <h1>this is home</h1>
+      {/* <p> {allWaves} </p> */}
+      <DisplayWaves value= {allWaves} />
+      {/* <button onClick={null}>Click me</button> */}
     </div>
     </>
   );

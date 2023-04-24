@@ -4,8 +4,24 @@ import { Link } from "react-router-dom";
 import { UserContext } from "../contexts";
 import { getDisplayName } from "../helpers";
 import React, { useEffect, useState } from "react";
+// import MyContext from './MyContext';
+// import MyComponent from './MyComponent';
+// import { Web3AuthNoModal } from "@web3auth/no-modal";
+// // import { Web3AuthNoModal } from "@web3auth/no-modal";
+// import { CHAIN_NAMESPACES } from "@web3auth/base";
 const getEthereumObject = () => window.ethereum;
+// const web3auth = new Web3AuthNoModal({
+//   clientId: "YOUR_WEB3AUTH_CLIENT_ID",
+//   web3AuthNetwork: "testnet",
+//   chainConfig: {
+//     chainNamespace: CHAIN_NAMESPACES.EIP155,
+//     chainId: "0x5",
+//     rpcTarget: "https://rpc-mumbai.matic.today", // This is the Mumbai testnet RPC endpoint
+//   },
+// });
 
+
+// const web3auth = new Web3AuthNoModal(Web3AuthNoModalOptions);
 export const Nav = () => {
   const { currentUser, isLoading } = useContext(UserContext);
   const [currentAccount, setCurrentAccount] = useState("");
@@ -60,6 +76,7 @@ export const Nav = () => {
 
 
     <div id="sidebar">
+      {/* <MyContext.Provider value={{ currentAccount, setCurrentAccount }}> */}
           <h1>D Quester</h1>
           <div>
             <form id="search-form" role="search">
@@ -129,6 +146,9 @@ export const Nav = () => {
         )}
       </div>
           </nav>
+          {/* </MyContext.Provider> */}
         </div>
+        
   );
 };
+// export default Nav;

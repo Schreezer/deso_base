@@ -2,8 +2,21 @@ import { identity } from "deso-protocol";
 import { useContext } from "react";
 import { UserContext } from "../contexts";
 import { getDisplayName } from "../helpers";
+// import { Web3Auth } from "@web3auth/modal";
+// import { Web3AuthNoModal } from "@web3auth/no-modal";/
+//Initialize within your constructor
 
 export const SwitchAccount = () => {
+  // const web3auth = new Web3AuthNoModal({
+  //   clientId: "", // Get your Client ID from Web3Auth Dashboard
+  //   chainConfig: {
+  //     chainNamespace: CHAIN_NAMESPACES.EIP155,
+  //     chainId: "0x1",
+  //     rpcTarget: "https://rpc.ankr.com/eth", // This is the mainnet RPC we have added, please pass on your own endpoint while creating an app
+  //   },
+  //   web3AuthNetwork: "mainnet", // mainnet, aqua, celeste, cyan or testnet
+  // });
+
   const { currentUser, alternateUsers, isLoading } = useContext(UserContext);
 
   if (!currentUser) {
