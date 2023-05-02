@@ -1,45 +1,24 @@
 import abi from "..//poo.json";
 import "./DisplayWaves.css";
 import { ethers } from "ethers";
-import React, { useEffect, useState } from "react";
-import MyContext from '..//components/MyContext.js';
+import React, { useEffect, useState, useContext } from "react";
+import MyContext from '../components/MyContext.js';
 import { getDatabase, ref, onValue, push, update, child} from "firebase/database";
-// import { firebase } from '@react-native-firebase/database';
+
 const getEthereumObject = () => window.ethereum;
-
-
 
 export const Home = () => {
   const[keyy, setKeyy] = useState(0);
-  const [currentAccount, setCurrentAccount] = useState("");
-
+  // const [currentAccount, setCurrentAccount] = useState("");
   // const { currentAccount } = useContext(MyContext);
   const contractAddress = "0x15796323a77408BBAD4C05535Bf7fFb10E8Bb6AB";
   const contractABI = abi.abi;
   const [allWaves, setAllWaves] = useState([]);
 
-  // const connectWallet = async () => {
-  //   try {
-  //     const ethereum = getEthereumObject();
-  //     if (!ethereum) {
-  //       alert("Get MetaMask!");
-  //       return;
-  //     }
-
-  //     const accounts = await ethereum.request({
-  //       method: "eth_requestAccounts",
-  //     });
-
-  //     console.log("Connected", accounts[0]);
-  //     setCurrentAccount(accounts[0]);
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  
-
-  // };
-  
+  const currentAccount = useContext(MyContext);
+  // console.log(currentAccount);
   useEffect(() => {
+    console.log("i was rendered again");
     const getAllQuestions = async () => {
       try {
         const { ethereum } = window;
@@ -100,7 +79,6 @@ export const Home = () => {
             setAllWaves(questionsCleaned);
           
         }
-        // updateStarCount(postElement, data);
       });
     }
     cal();
@@ -108,53 +86,30 @@ export const Home = () => {
 
   }, []);
 
-  
-
-  // function Display_waves(props){
-
-  //   return(
-  //     props.value.map((wave, index) => {
-      
-  //         return (
-  //           <div key={index} style={{ backgroundColor: "OldLace", marginTop: "16px", padding: "8px" }}>
-           
-  //             <div>Address: {wave.Questioner}</div>
-  //             <div>Time: {wave.timestamp.toString()}</div>
-  //             <div>Message: {wave.Question}</div>
-  //             <div>Bounty: {wave.Bounty.toString()}</div>
-  //             <input type="text" placeholder="Answer" />
-  //             <button>Answer</button>
-  //           </div>)
-           
-        
-    
-  //     })
-  //   ) }
-
   function DisplayWaves(props) {
     const[answer,setAnswer]=useState("");
     function handleChangeA(e) {
       setAnswer(e.target.value);
     }
+
     function Answer(qid){
+   
       console.log(answer);
       console.log(qid);
       const db = getDatabase();
-      console.log(currentAccount);
+      console.log("i am being fucked here, so what can you do ? :"+currentAccount);
+      // let val= currentAccount;
       const _Answer = {
         Answer: answer,
-        Answerer: currentAccount,
+        Answerer: "val",
         Qid: qid,
       };
       const newPostKey = push(child(ref(db), 'posts')).key;
       const updates = {};
       updates['/posts/' + qid + "/" + newPostKey] = _Answer;
-      updates['/user-posts/' + currentAccount + '/' + newPostKey] = _Answer;
+      updates['/user-posts/' + "currentAccount" + '/' + newPostKey] = _Answer;
       
       return update(ref(db), updates);
-    
-      
-
     }
     return (
       <div className="waves-container">
@@ -177,27 +132,12 @@ export const Home = () => {
       </div>
     );
   }
-  
-  
 
   return (
     <>
     <div >
-      {/* <h1>Welcome to D Quester</h1> */}
-      {/* <p>
-        This is a simple example app that demonstrates how to use{" "}
-        <a
-          href="https://www.npmjs.com/package/deso-protocol"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          deso-protocol
-        </a>
-      </p> */}
       <h1>Welcome to D Quester Version: 0.01</h1>
-      {/* <p> {allWaves} </p> */}
       <DisplayWaves value= {allWaves} />
-      {/* <button onClick={null}>Click me</button> */}
     </div>
     </>
   );

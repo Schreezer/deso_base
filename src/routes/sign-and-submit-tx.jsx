@@ -6,6 +6,7 @@ import abi from "..//poo.json";
 import abby from "../abby.json";
 import "./shramp.css";
 import { ethers } from "ethers";
+import "./style.css";
 
 // import firebase from 'firebase/app';
 // import 'firebase/database';
@@ -169,20 +170,23 @@ export const SignAndSubmitTx = () => {
   }
 
   return(
-    <div className="container">
+    <div>
        <textarea
-            name="post-textarea"
-            cols={60}
-            rows={10}
-            placeholder="Enter Question Here"
-            onChange={handleChangeQ}
-            style={{ border: "1px solid black" }}
-          ></textarea>
-  <input type="text" placeholder="Enter Bounty Here" onChange={handleChangeB
+  name="post-textarea"
+  class="post-textarea"
+  cols={60}
+  rows={10}
+  placeholder="Enter Question Here"
+  onChange={handleChangeQ}
+></textarea>
+<input
+  type="text"
+  class="bounty-input"
+  placeholder="Enter Bounty Here"
+  onChange={handleChangeB}
+/>
+<button class="submit-button" onClick={wave}>Submit</button>
 
-  } />
-  {/*  */}
-  <button onClick={wave}>Submit</button>
   {/* <button onClick={changeOwner}>Change Owner</button> */}
   {/* <button onClick={call}>Call</button> */}
 

@@ -19,6 +19,7 @@ configure({
 });
 
 export const Root = () => {
+  
   const [userState, setUserState] = useState({
     currentUser: null,
     alternateUsers: null,
@@ -131,6 +132,7 @@ export const Root = () => {
   //     setCurrentAccount(account);
   //   }
   // }, []);
+  const [account, setAccount] = useState(null);
   return (
     <UserContext.Provider value={userState}>
      <Nav />
