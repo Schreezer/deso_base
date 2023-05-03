@@ -4,12 +4,13 @@ import { UserContext } from "../contexts";
 import { getDisplayName } from "../helpers";
 import React, { useEffect, useState, useContext, createContext } from "react";
 import MyContext from './MyContext';
+import newContext from "../routes/new";
 // get ethereum object
 const getEthereumObject = () => window.ethereum;
 // const MyContext = createContext();
 // export const { currentAccount, setCurrentAccount }= useState(null);
 export const Nav = () => {
-  const [currentAccount, setCurrentAccount] = useState("");
+  const {currentAccount, setCurrentAccount} = useContext(newContext);
   const [currentUser, setCurrentUser] = useState("knkn");
   const [isLoading, setIsLoading] = useState(false);
 
@@ -28,14 +29,16 @@ export const Nav = () => {
       });
 
       console.log("Connected", accounts[0]);
+      console.log(currentAccount);
       setCurrentAccount(accounts[0]);
     } catch (error) {
       console.error(error);
     }
   };
   return(
+    // <MyContext.Provider value={{currentAccount,}>
     <div id="sidebar">
-    <MyContext.Provider value={currentAccount}>
+    
           <h1>D Quester</h1>
           <div>
             <form id="search-form" role="search">
@@ -97,8 +100,9 @@ export const Nav = () => {
         )}
       </div>
           </nav>
-          </MyContext.Provider>
+          
         </div>
+        // </MyContext.Provider> 
 
   );
 

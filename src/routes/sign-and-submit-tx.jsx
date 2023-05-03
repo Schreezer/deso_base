@@ -7,7 +7,7 @@ import abby from "../abby.json";
 import "./shramp.css";
 import { ethers } from "ethers";
 import "./style.css";
-
+import newContext from "./new";
 // import firebase from 'firebase/app';
 // import 'firebase/database';
 import { initializeApp } from 'firebase/app';
@@ -168,7 +168,7 @@ export const SignAndSubmitTx = () => {
       console.log(error);
     }
   }
-
+  const value = React.useContext(newContext);
   return(
     <div>
        <textarea
@@ -176,7 +176,7 @@ export const SignAndSubmitTx = () => {
   class="post-textarea"
   cols={60}
   rows={10}
-  placeholder="Enter Question Here"
+  placeholder={value}
   onChange={handleChangeQ}
 ></textarea>
 <input

@@ -7,7 +7,8 @@ import {
 import { useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
 import { Nav } from "../components/nav";
-import { UserContext } from "../contexts";
+// import { UserContext } from "../contexts";
+import { newContext } from "./new.js";
 import {findMetaMaskAccount} from "./findMetaMask.jsx"
 configure({
   spendingLimitOptions: {
@@ -19,7 +20,7 @@ configure({
 });
 
 export const Root = () => {
-  
+  const[currentAccount, setCurrentAccount] = useState(null);
   const [userState, setUserState] = useState({
     currentUser: null,
     alternateUsers: null,
@@ -133,13 +134,15 @@ export const Root = () => {
   //   }
   // }, []);
   const [account, setAccount] = useState(null);
+  // const [acc, setAcc] = React.useReducer(reducer, initialState);
+
   return (
-    <UserContext.Provider value={userState}>
+    <newContext.Provider value={{ currentAccount , setCurrentAccount }}>
      <Nav />
       <div role="main" className="main-content">
       
         {userState.isLoading ? <div>Loading...</div> : <Outlet />}
       </div>
-    </UserContext.Provider>
+    </newContext.Provider>
   );
 };

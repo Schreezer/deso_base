@@ -2,9 +2,9 @@ import abi from "..//poo.json";
 import "./DisplayWaves.css";
 import { ethers } from "ethers";
 import React, { useEffect, useState, useContext } from "react";
-import MyContext from '../components/MyContext.js';
+import MyContext from '../components/MyContext';
 import { getDatabase, ref, onValue, push, update, child} from "firebase/database";
-
+import newContext  from "./new.js";
 const getEthereumObject = () => window.ethereum;
 
 export const Home = () => {
@@ -15,8 +15,8 @@ export const Home = () => {
   const contractABI = abi.abi;
   const [allWaves, setAllWaves] = useState([]);
 
-  const currentAccount = useContext(MyContext);
-  // console.log(currentAccount);
+  const {currentAccount , setCurrentAccount}= React.useContext(newContext); 
+  console.log(currentAccount);
   useEffect(() => {
     console.log("i was rendered again");
     const getAllQuestions = async () => {
@@ -92,22 +92,22 @@ export const Home = () => {
       setAnswer(e.target.value);
     }
 
-    function Answer(qid){
-   
+    function Answer(qid,account){
+      
       console.log(answer);
       console.log(qid);
       const db = getDatabase();
-      console.log("i am being fucked here, so what can you do ? :"+currentAccount);
+      console.log("i am being fucked here, so what can you do ? :"+account);
       // let val= currentAccount;
       const _Answer = {
         Answer: answer,
-        Answerer: "val",
+        Answerer: account,
         Qid: qid,
       };
       const newPostKey = push(child(ref(db), 'posts')).key;
       const updates = {};
       updates['/posts/' + qid + "/" + newPostKey] = _Answer;
-      updates['/user-posts/' + "currentAccount" + '/' + newPostKey] = _Answer;
+      updates['/user-posts/' + currentAccount+ '/' + newPostKey] = _Answer;
       
       return update(ref(db), updates);
     }
@@ -125,7 +125,7 @@ export const Home = () => {
             <div className="answer-container">
               <input type="text" placeholder="Answer" className="answer-input" onChange={handleChangeA}/>
              
-              <button className="answer-button" onClick={() => Answer(wave.Qid)}>Answer</button>
+              <button className="answer-button" onClick={() => Answer(wave.Qid,currentAccount)}>Answer</button>
             </div>
           </div>
         ))}
@@ -135,10 +135,12 @@ export const Home = () => {
 
   return (
     <>
-    <div >
+    <newContext.Provider value= "reed">
+    {/* <div > */}
       <h1>Welcome to D Quester Version: 0.01</h1>
       <DisplayWaves value= {allWaves} />
-    </div>
+    {/* </div> */}
+    </newContext.Provider>
     </>
   );
 };
