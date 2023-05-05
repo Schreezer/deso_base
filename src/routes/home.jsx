@@ -52,7 +52,10 @@ export const Home = () => {
     
     // Your function goes here
     getAllQuestions();
+
     console.log('The component has been mounted');
+    
+    
 
 
     // now using the google firebase
@@ -91,6 +94,55 @@ export const Home = () => {
     function handleChangeA(e) {
       setAnswer(e.target.value);
     }
+    const [answers, setAnswers] = useState([]);
+
+    function fetchAnswers(qid) {
+      //wanted
+/*
+      const starCountRef = ref(db, "/posts/");
+      onValue(starCountRef, (snapshot) => {
+        const data = snapshot.val();
+        // console.log(data);
+        let questionsCleaned = [];
+        for (const key in data) {
+            // do something with the object that matches the key
+            const value = data[key];
+            questionsCleaned.push({
+              Qid: key,
+              Questioner: value["questioner"],
+              // timestamp: value["uid"],
+              // timestamp: wave.timestamp,
+              Question: value["Question"],
+              Bounty: value["Bounty"],
+            });
+            questionsCleaned.reverse();
+            setAllWaves(questionsCleaned);
+          
+        }
+      });
+*/
+
+      //actual 
+      const db = getDatabase();
+      const answersRef = ref(db, `/posts/${qid}`);
+      onValue(answersRef, (snapshot) => {
+        const data = snapshot.val();
+        let answersCleaned = [];
+        for (const key in data) {
+          const value = data[key];
+          if (value.hasOwnProperty("Answer")) {
+            answersCleaned.push({
+              Answerer: value["Answerer"],
+              Answer: value["Answer"],
+            });
+          }
+        }
+        setAnswers(answersCleaned);
+      });
+    }
+
+
+
 
     function Answer(qid,account){
       
@@ -126,6 +178,17 @@ export const Home = () => {
               <input type="text" placeholder="Answer" className="answer-input" onChange={handleChangeA}/>
              
               <button className="answer-button" onClick={() => Answer(wave.Qid,currentAccount)}>Answer</button>
+              <button className="fetch-answers-button" onClick={() => fetchAnswers(wave.Qid)}>Show Answers</button>
+              <div className="answers-container">
+              {answers.map((answer, index) => (
+                <div key={index} className="answer-card">
+                  {/* <div className="answerer">Answerer: {answer.Answerer}</div> */}
+                  <div className="answer">{answer.Answer}</div>
+                </div>
+              ))}
+            </div>
+
+
             </div>
           </div>
         ))}

@@ -5,17 +5,12 @@ import { getDisplayName } from "../helpers";
 import React, { useEffect, useState, useContext, createContext } from "react";
 import MyContext from './MyContext';
 import newContext from "../routes/new";
-// get ethereum object
+// get ethereum object from window
 const getEthereumObject = () => window.ethereum;
-// const MyContext = createContext();
-// export const { currentAccount, setCurrentAccount }= useState(null);
 export const Nav = () => {
   const {currentAccount, setCurrentAccount} = useContext(newContext);
   const [currentUser, setCurrentUser] = useState("knkn");
   const [isLoading, setIsLoading] = useState(false);
-
-
-
   const connectWallet = async () => {
     try {
       const ethereum = getEthereumObject();
@@ -36,7 +31,6 @@ export const Nav = () => {
     }
   };
   return(
-    // <MyContext.Provider value={{currentAccount,}>
     <div id="sidebar">
     
           <h1>D Quester</h1>
@@ -102,9 +96,6 @@ export const Nav = () => {
           </nav>
           
         </div>
-        // </MyContext.Provider> 
-
   );
 
 };
-// export default Nav;

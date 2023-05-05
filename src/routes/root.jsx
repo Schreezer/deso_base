@@ -138,7 +138,8 @@ export const Root = () => {
 
   return (
     <newContext.Provider value={{ currentAccount , setCurrentAccount }}>
-     <Nav />
+     <Nav style={{ position: 'fixed', top: 0, left: 0, width: '100%', zIndex: 100 }} />
+
       <div role="main" className="main-content">
       
         {userState.isLoading ? <div>Loading...</div> : <Outlet />}
