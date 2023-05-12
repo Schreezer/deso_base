@@ -200,8 +200,12 @@ export const Home = () => {
     <>
     <newContext.Provider value= "reed">
     {/* <div > */}
-      <h1>Welcome to D Quester Version: 0.01</h1>
-      <DisplayWaves value= {allWaves} />
+      {/* <h1>Welcome to D Quester Version: 0.01</h1> */}
+      <DisplayWaves
+  value={allWaves}
+  style={{ overflow: "auto" }}
+/>
+
     {/* </div> */}
     </newContext.Provider>
     </>

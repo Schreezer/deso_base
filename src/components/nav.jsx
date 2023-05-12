@@ -5,6 +5,7 @@ import { getDisplayName } from "../helpers";
 import React, { useEffect, useState, useContext, createContext } from "react";
 import MyContext from './MyContext';
 import newContext from "../routes/new";
+import "./hello.css";
 // get ethereum object from window
 const getEthereumObject = () => window.ethereum;
 export const Nav = () => {

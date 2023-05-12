@@ -9,6 +9,7 @@ import { Outlet } from "react-router-dom";
 import { Nav } from "../components/nav";
 // import { UserContext } from "../contexts";
 import { newContext } from "./new.js";
+// import "./style.css";
 import {findMetaMaskAccount} from "./findMetaMask.jsx"
 configure({
   spendingLimitOptions: {
@@ -138,7 +139,7 @@ export const Root = () => {
 
   return (
     <newContext.Provider value={{ currentAccount , setCurrentAccount }}>
-     <Nav style={{ position: 'fixed', top: 0, left: 0, width: '100%', zIndex: 100 }} />
+     <Nav/>
 
       <div role="main" className="main-content">
       
