@@ -7,25 +7,26 @@ import abby from "../abby.json";
 import "./shramp.css";
 import { ethers } from "ethers";
 import "./style.css";
+//import env file data from the file named .env
+// import dotenv from "dotenv";
 import newContext from "./new";
-// import firebase from 'firebase/app';
-// import 'firebase/database';
 import { initializeApp } from 'firebase/app';
 import { getAnalytics } from "firebase/analytics";
 import { getDatabase, ref, child, push, update } from "firebase/database";
 // TODO: Replace the following with your app's Firebase project configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyCn_zW1FBedTCeCmqa6VWnvy4pnVJ5PkOc",
-  authDomain: "d-quester.firebaseapp.com",
-  projectId: "d-quester",
-  storageBucket: "d-quester.appspot.com",
-  messagingSenderId: "96750642368",
-  appId: "1:96750642368:web:8596fd770651d409e0f925",
-  databaseURL: "https://d-quester-default-rtdb.asia-southeast1.firebasedatabase.app/",
-  measurementId: "G-39Q7YLHJJ4"
+  apiKey: process.env.REACT_APP_API_KEY,
+  authDomain: process.env.REACT_APP_AUTH_DOMAIN,
+  projectId: process.env.REACT_APP_PROJECT_ID,
+  storageBucket: process.env.REACT_APP_STORAGE_BUCKET,
+  messagingSenderId: process.env.REACT_APP_MESSAGING_SENDER_ID,
+  appId: process.env.REACT_APP_APP_ID,
+  databaseURL: process.env.REACT_APP_DATABASE_URL,
+  measurementId: process.env.REACT_APP_MEASUREMENT_ID
 };
 
 const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
 
 function writeNewPost(user,quest,bounty) {
   const db = getDatabase();
@@ -48,17 +49,11 @@ function writeNewPost(user,quest,bounty) {
 
   return update(ref(db), updates);
 }
-
-
-function call(){
-  console.log(writeNewPost(4,"picky sdkfbefbe","titi", "boddigiwenewfiwefief"));
-  console.log("called");
-}
 // Store the book's information in the database
 
 const getEthereumObject = () => window.ethereum;
 // const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
+// const analytics = getAnalytics(app);
 export const SignAndSubmitTx = () => {
   const { currentUser, isLoading } = useContext(UserContext);
   const [currentAccount, setCurrentAccount] = useState("");
@@ -176,7 +171,7 @@ export const SignAndSubmitTx = () => {
   class="post-textarea"
   cols={60}
   rows={10}
-  placeholder={value}
+  placeholder={"Enter Question here"}
   onChange={handleChangeQ}
 ></textarea>
 <input
@@ -188,90 +183,8 @@ export const SignAndSubmitTx = () => {
 <button class="submit-button" onClick={wave}>Submit</button>
 
   {/* <button onClick={changeOwner}>Change Owner</button> */}
-  {/* <button onClick={call}>Call</button> */}
+ 
 
 </div>
   )
-
-  // let hasPostingPermissions = identity.hasPermissions({
-  //   TransactionCountLimitMap: {
-  //     SUBMIT_POST: 1,
-  //   },
-  // });
-
-  // if (isLoading) {
-  //   return <div>Loading...</div>;
-  // }
-
-  // if (!currentUser || !currentUser.BalanceNanos) {
-  //   return (
-  //     <button
-  //       onClick={() => {
-  //         identity
-  //           .login({
-  //             getFreeDeso: true,
-  //           })
-  //           .catch((err) => {
-  //             if (err?.type === ERROR_TYPES.NO_MONEY) {
-  //               alert("You need DESO in order to post!");
-  //             } else {
-  //               alert(err);
-  //             }
-  //           });
-  //       }}
-  //     >
-  //       Login to post a Question
-  //     </button>
-  //   );
-  // } else {
-  //   return (
-  //     <>
-  //       <h1>Submit a Question</h1>
-  //       <form
-  //         onSubmit={async (e) => {
-  //           e.preventDefault();
-
-  //           // check if the user can make a post
-  //           if (!hasPostingPermissions) {
-  //             // if the user doesn't have permissions, request them
-  //             // and abort the submit
-  //             identity.requestPermissions({
-  //               GlobalDESOLimit: 10000000, // 0.01 DESO
-  //               TransactionCountLimitMap: {
-  //                 SUBMIT_POST: 3,
-  //               },
-  //             });
-  //             return;
-  //           }
-
-  //           const body = e.target[0].value;
-
-  //           await submitPost({
-  //             UpdaterPublicKeyBase58Check: currentUser.PublicKeyBase58Check,
-  //             BodyObj: {
-  //               Body: body,
-  //               ImageURLs: [],
-  //               VideoURLs: [],
-  //             },
-  //           }).then((resp) => {
-  //             console.log(resp);
-  //             alert("Post submitted!");
-  //           });
-  //         }}
-  //       >
-          // <textarea
-          //   name="post-textarea"
-          //   cols={30}
-          //   rows={10}
-          //   style={{ border: "1px solid black" }}
-          // ></textarea>
-  //         <div>
-  //           <button>Post</button>
-  //         </div>
-  //       </form>
-  //     </>
-  //   );
-  // }
-
-  
 };

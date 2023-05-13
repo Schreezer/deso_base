@@ -134,18 +134,43 @@ export const Home = () => {
             answersCleaned.push({
               Answerer: value["Answerer"],
               Answer: value["Answer"],
+              Question: qid,
             });
           }
         }
         setAnswers(answersCleaned);
+        console.log("yellow \n\n bellowed")
+        console.log(answersCleaned);
       });
     }
 
 
 
-
+    const connectWallet = async () => {
+      try {
+        const ethereum = getEthereumObject();
+        if (!ethereum) {
+          alert("Get MetaMask!");
+          return;
+        }
+  
+        const accounts = await ethereum.request({
+          method: "eth_requestAccounts",
+        });
+  
+        console.log("Connected", accounts[0]);
+        console.log(currentAccount);
+        setCurrentAccount(accounts[0]);
+      } catch (error) {
+        console.error(error);
+      }
+    };
     function Answer(qid,account){
-      
+      connectWallet();
+
+     
+      require(account!=null);
+      // console.log(account);
       console.log(answer);
       console.log(qid);
       const db = getDatabase();
@@ -178,15 +203,23 @@ export const Home = () => {
               <input type="text" placeholder="Answer" className="answer-input" onChange={handleChangeA}/>
              
               <button className="answer-button" onClick={() => Answer(wave.Qid,currentAccount)}>Answer</button>
-              <button className="fetch-answers-button" onClick={() => fetchAnswers(wave.Qid)}>Show Answers</button>
+              <button className="fetch-answers-button" onClick={() =>
+                fetchAnswers(wave.Qid)
+                }>Show Answers</button>
+                
               <div className="answers-container">
-              {answers.map((answer, index) => (
-                <div key={index} className="answer-card">
-                  {/* <div className="answerer">Answerer: {answer.Answerer}</div> */}
-                  <div className="answer">{answer.Answer}</div>
-                </div>
-              ))}
+              {answers.map((answer, index) =>
+                answer.Question === wave.Qid ? (
+                  // (
+                  <div key={index} className="answer-card">
+                    <div className="answerer">Answerer: {answer.Answerer}</div>
+                    <div className="answer">{answer.Answer}</div>
+                  </div>
+                ) 
+                : null
+              )}
             </div>
+
 
 
             </div>
