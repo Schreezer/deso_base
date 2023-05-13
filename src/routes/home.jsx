@@ -216,7 +216,7 @@ export const Home = () => {
                     <div className="answer">{answer.Answer}</div>
                   </div>
                 ) 
-                : null
+                : <div> No Answers Posted Yet </div>
               )}
             </div>
 
