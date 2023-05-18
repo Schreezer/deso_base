@@ -6,12 +6,26 @@ import React, { useEffect, useState, useContext, createContext } from "react";
 import MyContext from './MyContext';
 import newContext from "../routes/new";
 import "./hello.css";
+import Web3 from "web3";
+import SocialLogin from "@biconomy/web3-auth";
+import "@biconomy/web3-auth/dist/src/style.css"
 // get ethereum object from window
 const getEthereumObject = () => window.ethereum;
 export const Nav = () => {
   const {currentAccount, setCurrentAccount} = useContext(newContext);
   const [currentUser, setCurrentUser] = useState("knkn");
   const [isLoading, setIsLoading] = useState(false);
+  const connect = async()=>{
+    // const signature1 = await socialLogin.whitelistUrl('https://deso-base.vercel.app');
+    const socialLogin = new SocialLogin();
+    await socialLogin.init();
+    socialLogin.showWallet();
+    // const web3Provider = await socialLogin.getweb3Provider();
+    // const web3 = new Web3(web3Provider);
+    // const accounts = await web3.eth.getAccounts();
+    // console.log(accounts);
+    // setCurrentAccount(accounts[0]);
+  }
   const connectWallet = async () => {
     try {
       const ethereum = getEthereumObject();
@@ -87,7 +101,7 @@ export const Nav = () => {
                 {getDisplayName(currentUser)}
               </span>
             )}
-            <button  onClick={connectWallet}>
+            <button  onClick={connect}>
             Connect Wallet
             
           </button>
