@@ -7,6 +7,7 @@ import MyContext from './MyContext';
 import newContext from "../routes/new";
 import "./hello.css";
 import Web3 from "web3";
+import { ethers } from "ethers";
 import SocialLogin from "@biconomy/web3-auth";
 import "@biconomy/web3-auth/dist/src/style.css"
 // get ethereum object from window
@@ -16,15 +17,28 @@ export const Nav = () => {
   const [currentUser, setCurrentUser] = useState("knkn");
   const [isLoading, setIsLoading] = useState(false);
   const connect = async()=>{
-    // const signature1 = await socialLogin.whitelistUrl('https://deso-base.vercel.app');
+    // 
     const socialLogin = new SocialLogin();
     await socialLogin.init();
+    const signature1 = await socialLogin.whitelistUrl('https://deso-base.vercel.app');
+    //whitelist the url
+    await socialLogin.init({
+      whitelistUrls: {
+        'https://yourdomain1.com': signature1,
+      }
+    });
+    
+    if (!socialLogin?.provider) return;
+    // create a provider from the social login provider that 
+    // will be used by the smart account package of the Biconomy SDK
+    const provider = new ethers.providers.Web3Provider(
+        socialLogin.provider,
+    );
+    // get a list of accounts available with the provider
+    const accounts = await provider.listAccounts();
+    console.log("EOA address", accounts)
+    if (accounts.length != 0) return;
     socialLogin.showWallet();
-    // const web3Provider = await socialLogin.getweb3Provider();
-    // const web3 = new Web3(web3Provider);
-    // const accounts = await web3.eth.getAccounts();
-    // console.log(accounts);
-    // setCurrentAccount(accounts[0]);
   }
   const connectWallet = async () => {
     try {
