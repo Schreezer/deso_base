@@ -10,25 +10,62 @@ import Web3 from "web3";
 import { ethers } from "ethers";
 import SocialLogin from "@biconomy/web3-auth";
 import "@biconomy/web3-auth/dist/src/style.css"
+import { ChainId } from "@biconomy/core-types";
+import SmartAccount from "@biconomy/smart-account";
 // get ethereum object from window
 const getEthereumObject = () => window.ethereum;
 export const Nav = () => {
   const {currentAccount, setCurrentAccount} = useContext(newContext);
   const [currentUser, setCurrentUser] = useState("knkn");
   const [isLoading, setIsLoading] = useState(false);
+  const [socialLogin_,setSocialLogin] = useState();
+  let options = {
+    activeNetworkId: ChainId.POLYGON_MUMBAI,
+    supportedNetworksIds: [ChainId.GOERLI, ChainId.POLYGON_MAINNET, ChainId.POLYGON_MUMBAI],
+    networkConfig: [
+      {
+        chainId: ChainId.POLYGON_MUMBAI,
+        // Dapp API Key you will get from new Biconomy dashboard that will be live soon
+        // Meanwhile you can use the test dapp api key mentioned above
+        dappAPIKey: "eEyhUkBOe.b59c0ab0-d93c-4335-801c-8f071c9f5087",
+        providerUrl: "https://polygon-mumbai.g.alchemy.com/v2/EfYkpdQH2zsdf2gtiVzKdiCkz0oK7OKi"
+      }
+    ]
+  }
+
+    useEffect(() => {
+      const socialLogin = new SocialLogin();
+      socialLogin.init();
+      const signature1 = socialLogin.whitelistUrl('https://deso-base.vercel.app');
+      //whitelist the url
+      socialLogin.init({
+        whitelistUrls: {
+          'https://yourdomain1.com': signature1,
+        }
+      });
+      console.log("social login to be checked here, please take a look: ", socialLogin);
+      setSocialLogin(socialLogin);
+
+    }, []);
+
   const connect = async()=>{
     // 
-    const socialLogin = new SocialLogin();
-    await socialLogin.init();
-    const signature1 = await socialLogin.whitelistUrl('https://deso-base.vercel.app');
-    //whitelist the url
-    await socialLogin.init({
-      whitelistUrls: {
-        'https://yourdomain1.com': signature1,
-      }
-    });
+    // const socialLogin = new SocialLogin();
+    // await socialLogin.init();
+    // const signature1 = await socialLogin.whitelistUrl('https://deso-base.vercel.app');
+    // //whitelist the url
+    // await socialLogin.init({
+    //   whitelistUrls: {
+    //     'https://yourdomain1.com': signature1,
+    //   }
+    // });
+    let socialLogin= socialLogin_;
+
     
-    if (!socialLogin?.provider) return;
+    if (!socialLogin?.provider) {
+      socialLogin.showWallet();
+      return;
+    }    
     // create a provider from the social login provider that 
     // will be used by the smart account package of the Biconomy SDK
     const provider = new ethers.providers.Web3Provider(
@@ -36,7 +73,10 @@ export const Nav = () => {
     );
     // get a list of accounts available with the provider
     const accounts = await provider.listAccounts();
+    let smartAccount = new SmartAccount(provider, options);
+    smartAccount = await smartAccount.init();
     console.log("EOA address", accounts)
+    console.log("Smart Account address", smartAccount.address)
     if (accounts.length != 0) return;
     socialLogin.showWallet();
   }
